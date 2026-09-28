@@ -55,8 +55,8 @@ details summary{cursor:pointer;color:var(--sub);font-size:13px;padding:8px 0 2px
 <div id="app">불러오는 중…</div>
 <div id="toast"></div>
 <script>
-const C=[['usd','달러',1],['jpy','엔화',100],['cny','위안화',1],['vnd','베트남 동',100],['twd','대만 달러',1],['thb','바트',1]];
-const DR={usd:1400,jpy:950,cny:195,vnd:5.4,twd:45,thb:43}; // 참고용 예시값 — 직접 수정하세요
+const C=[['usd','달러',1],['jpy','엔화',100],['cny','위안화',1],['vnd','베트남 동',100],['twd','대만 달러',1],['thb','바트',1],['eur','유로',1]];
+const DR={usd:1400,jpy:950,cny:195,vnd:5.4,twd:45,thb:43,eur:1600}; // 참고용 예시값 — 직접 수정하세요
 const today=()=>new Date().toLocaleDateString('sv');
 const uid8=()=>Math.random().toString(36).slice(2,10);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -104,7 +104,7 @@ const conv=(amt,c)=>(+amt||0)*(+R()[c]||0)/unit(c);
 const route=()=>location.hash==='#/log'?'log':'calc';
 
 /* ---------- 환율 자동 불러오기 ---------- */
-const R=()=>curFolder().rates;
+const R=()=>{const r=curFolder().rates;for(const k in DR)if(r[k]==null)r[k]=DR[k];return r};
 const mkFolder=(name,cur)=>({id:uid8(),name,cur,rates:{...DR},rinfo:'예시값'});
 async function fetchRates(){
   const tj=async u=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),8000);try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw 0;return await r.json()}finally{clearTimeout(t)}};
